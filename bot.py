@@ -7,43 +7,60 @@ token = '5520340219:AAEGg-RH8fboT6ierDkSMXeAVUoWGTWH7AY'
 bot = telebot.TeleBot(token)
 
 
-@bot.message_handler(commands=['start', 'вернутся'])
+
+
+admin_users = 478991565
+
+
+
+@bot.message_handler(commands=['start'])
 def start(message):
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btn1 = types.KeyboardButton("👋 Поздороваться")
-    markup.add(btn1)
-    bot.send_message(message.from_user.id, "👋 Привет! Я твой бот-помошник!", reply_markup=markup)
+    btn1 = types.KeyboardButton("👋")
+    btn2 = types.KeyboardButton("я admin")
+    markup.add(btn1, btn2)
+    bot.send_message(message.from_user.id, "👋 Привет! Я бот-помошник!", reply_markup=markup)
+
+
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
 
-    if message.text == '👋 Поздороваться':
+    if message.text == '👋':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2) #создание новых кнопок
-        btn1 = types.KeyboardButton('Как стать автором на Хабре?')
-        btn2 = types.KeyboardButton('Правила сайта')
-        btn3 = types.KeyboardButton('Советы по оформлению публикации')
+        btn1 = types.KeyboardButton('кто я?')
+        btn2 = types.KeyboardButton('Правила')
+        btn3 = types.KeyboardButton('че')
         btn4 = types.KeyboardButton('вернутся')
         markup.add(btn1, btn2, btn3, btn4)
-        bot.send_message(message.from_user.id, '❓ Задайте интересующий вас вопрос', reply_markup=markup) #ответ бота
+        bot.send_message(message.from_user.id, 'Что вас интересует?', reply_markup=markup) #ответ бота
 
 
-    elif message.text == 'Как стать автором на Хабре?':
-        bot.send_message(message.from_user.id, 'Вы пишете первый пост, его проверяют модераторы, и, если всё хорошо, отправляют в основную ленту Хабра, где он набирает просмотры, комментарии и рейтинг. В дальнейшем премодерация уже не понадобится. Если с постом что-то не так, вас попросят его доработать.\n \nПолный текст можно прочитать по ' + '[ссылке](https://habr.com/ru/sandbox/start/)', parse_mode='Markdown')
+    elif message.text == 'кто я?':
+        user_id = message.from_user.id
+        bot.send_message(message.from_user.id, f'ваш айди {user_id}', parse_mode='Markdown')
 
-    elif message.text == 'Правила сайта':
-        bot.send_message(message.from_user.id, 'Прочитать правила сайта вы можете по ' + '[ссылке](https://habr.com/ru/docs/help/rules/)', parse_mode='Markdown')
+    elif message.text == 'Правила':
+        bot.send_message(message.from_user.id, 'нету правил', parse_mode='Markdown')
 
-    elif message.text == 'Советы по оформлению публикации':
-        bot.send_message(message.from_user.id, 'Подробно про советы по оформлению публикаций прочитать по ' + '[ссылке](https://habr.com/ru/docs/companies/design/)', parse_mode='Markdown')
+    elif message.text == 'че':
+        markup = types.InlineKeyboardMarkup()
+        btn5 = types.InlineKeyboardButton(text='Наш сайт', url='https://habr.com/ru/all/')
+        markup.add(btn5)
+        bot.send_message(message.from_user.id, "По кнопке ниже можно перейти на сайт хабра", reply_markup = markup)
 
     elif message.text == 'вернутся':
         start(message)
         
         
-        
-        
-        
+    @bot.message_handler(content_types=['text'])
+    def get_mess_from_admin(message):
+        if message.text == 'я admin':
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            btn10 = types.KeyboardButton('почему я')
+            markup.add(btn10)
+            bot.send_message(message.from_user.id, 'потому что вы админ', reply_markup = markup)
         
         
         
