@@ -1,6 +1,6 @@
 import telebot
 from telebot import types
-
+from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 
 token = '5520340219:AAEGg-RH8fboT6ierDkSMXeAVUoWGTWH7AY'
 
@@ -10,6 +10,8 @@ admin_users = [478991566]
 
 maybe =""
 zapis_k_sashe = ""
+
+
 
 #начальная страница
 @bot.message_handler(commands=['start'])
@@ -22,7 +24,19 @@ def start(message):
     bot.send_message(message.from_user.id, "👋 Привет! Я бот-помошник!", reply_markup=markup)
 
 
+@bot.message_handler(commands=['calendar'])
+def calendar(m):
+    calendar, step = DetailedTelegramCalendar().build()
+    bot.send_message(m.chat.id,f"Select {LSTEP[step]}",reply_markup=calendar)
 
+
+@bot.callback_query_handler(func=DetailedTelegramCalendar.func())
+def cal(c):
+    result, key, step = DetailedTelegramCalendar().process(c.data)
+    if not result and key:
+        bot.edit_message_text(f"Select {LSTEP[step]}",c.message.chat.id,c.message.message_id,reply_markup=key)
+    elif result:
+        bot.edit_message_text(f"You selected {result}",c.message.chat.id, c.message.message_id)
 
 
 @bot.message_handler(content_types=['text'])
@@ -30,11 +44,12 @@ def get_text_messages(message):
 
     if '👋' in  message.text:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2) #создание новых кнопок
-        rtyu = types.KeyboardButton('кто я?')
+        
         zapis = types.KeyboardButton('Запись')
+        rtyu = types.KeyboardButton('Календарь записей')
         chanal = types.KeyboardButton('Канал')
         back = types.KeyboardButton('Вернутся')
-        markup.add(rtyu, zapis, chanal, back)
+        markup.add(zapis, rtyu, chanal, back)
         bot.send_message(message.from_user.id, 'Что вас интересует?', reply_markup=markup) #ответ бота
     
     elif message.text == 'Вернутся':
@@ -61,6 +76,9 @@ def get_text_messages(message):
         admin_users.append(message.from_user.id)
         bot.send_message(message.from_user.id, "У вас появился доступ к админке")
     
+    elif message.text == 'Календарь записей':
+        calendar(message)
+    
     
     elif "хочу запись" in message.text or "Хочу запись" in message.text:
         global zapis_k_sashe
@@ -82,12 +100,10 @@ def get_text_messages(message):
 
 
 
-
-
 def get_mess_from_admin(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     why = types.KeyboardButton('Посмотреть записи')
-    who = types.KeyboardButton('Календарь')
+    who = types.KeyboardButton('Календарь записей')
     backk = types.KeyboardButton('Вернутся')
     clear_zap = types.KeyboardButton('Очистить записи')
     markup.add(why,who,backk, clear_zap)
