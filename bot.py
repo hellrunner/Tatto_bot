@@ -12,7 +12,7 @@ bot = telebot.TeleBot(token)
 admin_users = 478991565
 
 
-
+#начальная страница
 @bot.message_handler(commands=['start'])
 def start(message):
 
@@ -21,6 +21,8 @@ def start(message):
     btn2 = types.KeyboardButton("я admin")
     markup.add(btn1, btn2)
     bot.send_message(message.from_user.id, "👋 Привет! Я бот-помошник!", reply_markup=markup)
+
+
 
 
 
@@ -52,16 +54,29 @@ def get_text_messages(message):
 
     elif message.text == 'вернутся':
         start(message)
+    
+    elif message.text == 'я admin':
+        #bot.register_next_step_handler(message, get_mess_from_admin)
+        get_mess_from_admin(message)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+def get_mess_from_admin(message):
+    
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+    btn1 = types.KeyboardButton('почему я')
+    btn2 = types.KeyboardButton('почему ns')
+    btn3 = types.KeyboardButton('вернутся')
+    markup.add(btn1,btn2,btn3)
+    bot.send_message(message.from_user.id, 'привет', reply_markup = markup)
         
-        
-    @bot.message_handler(content_types=['text'])
-    def get_mess_from_admin(message):
-        if message.text == 'я admin':
-            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-            btn10 = types.KeyboardButton('почему я')
-            markup.add(btn10)
-            bot.send_message(message.from_user.id, 'потому что вы админ', reply_markup = markup)
-        
-        
+    if message.text == 'вернутся':
+        start(message)
         
 bot.polling(none_stop=True, interval=0)
