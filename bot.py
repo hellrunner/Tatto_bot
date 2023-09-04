@@ -116,5 +116,5 @@ def get_mess_from_zakas(message):
     markup.add(yes_zakas, no_zakas)
     bot.send_message(message.from_user.id, f"Вы уверенны, что хотите иметь запись на сеанс с такими пожеланиями? \n{message.text}", reply_markup= markup)
 
-
-bot.polling(none_stop=True, interval=0)
+if __name__ == '__main__':
+    bot.polling(none_stop=True, interval=0)
